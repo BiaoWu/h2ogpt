@@ -21,7 +21,8 @@ def test_export_copy():
     import torch
     n_gpus = torch.cuda.device_count() if torch.cuda.is_available else 0
     device = 'cpu' if n_gpus == 0 else 'cuda'
-    device_map = {"": 0} if device == 'cuda' else "auto"
+    device_map = {"": 3} if device == 'cuda' else "auto"
+    # device_map = {"": 0} if device == 'cuda' else "auto"
 
     from transformers import AutoTokenizer, AutoModelForCausalLM
     model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map=device_map,
@@ -63,7 +64,8 @@ def test_pipeline1():
     # if have 48GB GPU can do load_in_8bit=False for more accurate results
     load_in_8bit = True
     # device_map = 'auto' might work in some cases to spread model across GPU-CPU, but it's not supported
-    device_map = {"": 0}
+    device_map = {"": 3}
+    # device_map = {"": 0}
     model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.float16,
                                                  device_map=device_map, load_in_8bit=load_in_8bit)
 
@@ -90,7 +92,8 @@ def test_pipeline2():
 
     model_name = "h2oai/h2ogpt-oig-oasst1-512-6_9b"
     load_in_8bit = False
-    device_map = {"": 0}
+    device_map = {"": 3}
+    # device_map = {"": 0}
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side="left")
     model = AutoModelForCausalLM.from_pretrained(model_name, torch_dtype=torch.bfloat16, device_map=device_map,
@@ -113,7 +116,7 @@ def test_pipeline3():
 
     model_kwargs = dict(load_in_8bit=False)
     generate_text = pipeline(model="h2oai/h2ogpt-oig-oasst1-512-6_9b", torch_dtype=torch.bfloat16,
-                             trust_remote_code=True, device_map="auto", prompt_type='human_bot',
+                             trust_remote_code=True, device_map={'': 3}, prompt_type='human_bot',
                              model_kwargs=model_kwargs)
 
     res = generate_text("Why is drinking water so healthy?", max_new_tokens=100)

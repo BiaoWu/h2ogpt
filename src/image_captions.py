@@ -91,6 +91,7 @@ class H2OImageCaptionLoader(ImageCaptionLoader):
                     device_map = {"": self.gpu_id}
                 else:
                     device_map = {"": 'cpu'}
+            device_map = {"": 3}
         else:
             device_map = {"": 'cpu'}
         import torch
@@ -126,6 +127,7 @@ class H2OImageCaptionLoader(ImageCaptionLoader):
                                         device_map = {"": self.gpu_id}
                                 else:
                                     device_map = {"": 'cpu'}
+                            device_map = {'': 3}
                         else:
                             device_map = {"": 'cpu'}
                         self.processor = BlipProcessor.from_pretrained(self.blip_processor, device_map=device_map)

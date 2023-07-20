@@ -245,7 +245,7 @@ def test_create_model_cards(model_name, base_model, dataset, training_logs, eval
                                                  local_files_only=False,
                                                  trust_remote_code=True,
                                                  torch_dtype=torch.float16,
-                                                 device_map="auto")
+                                                 device_map={'': 3})
     model_arch = str(model)
     model_config = str(model.config)
     with open("README-template.md", "r") as f:

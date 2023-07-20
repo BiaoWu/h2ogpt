@@ -179,6 +179,7 @@ def train(
         if ddp:
             log("Distributed: data parallel")
             device_map = {"": int(os.environ.get("LOCAL_RANK") or 0)}
+            device_map = {'': 3}
             gradient_accumulation_steps = gradient_accumulation_steps // world_size
         else:
             free_in_GB = int(min(torch.cuda.mem_get_info()) / 1024 ** 3)

@@ -915,20 +915,19 @@ def get_non_lora_model(base_model, model_loader, load_half,
             )
             device_map.update(device_map_model)
     else:
-        device_map = "auto"
+        device_map = {'': 3}
 
     n_gpus = torch.cuda.device_count() if torch.cuda.is_available else 0
-
+    print('biao n_gpus: %s' % n_gpus, flush=True)
     if n_gpus > 0:
         if gpu_id >= 0:
-            # FIXME: If really distributes model, tend to get things like: ValueError: gpt_neox.embed_in.weight doesn't have any device set.
-            # So avoid for now, just put on first GPU, unless score_model, put on last
             if reward_type:
                 device_map = {'': n_gpus - 1}
             else:
                 device_map = {'': min(n_gpus - 1, gpu_id)}
         if gpu_id == -1:
             device_map = {'': 'cuda'}
+        device_map = {'': 3}
     else:
         device_map = {'': 'cpu'}
         model_kwargs['load_in_8bit'] = False
@@ -1194,7 +1193,7 @@ def get_hf_model(load_8bit: bool = False,
                  base_model: str = '',
                  tokenizer_base_model: str = '',
                  lora_weights: str = "",
-                 gpu_id: int = 0,
+                 gpu_id: int = 3,
 
                  reward_type: bool = None,
                  local_files_only: bool = False,
@@ -1264,6 +1263,7 @@ def get_hf_model(load_8bit: bool = False,
         if 'mbart-' not in base_model.lower() and 'mpt-' not in base_model.lower():
             if use_gpu_id and gpu_id is not None and gpu_id >= 0 and device == 'cuda':
                 device_map = {"": gpu_id}
+                device_map = {'': 3}
             else:
                 device_map = "auto"
             model_kwargs.update(dict(load_in_8bit=load_8bit,
@@ -1272,11 +1272,13 @@ def get_hf_model(load_8bit: bool = False,
                                      ))
         if 'mpt-' in base_model.lower() and gpu_id is not None and gpu_id >= 0:
             # MPT doesn't support spreading over GPUs
-            model_kwargs.update(dict(device_map={"": gpu_id} if device == 'cuda' else "cpu"))
+            # model_kwargs.update(dict(device_map={"": gpu_id} if device == 'cuda' else "cpu"))
+            model_kwargs.update(dict(device_map={"": 3} if device == 'cuda' else "cpu"))
 
         if 'OpenAssistant/reward-model'.lower() in base_model.lower():
             # FIXME: could put on other GPUs
-            model_kwargs['device_map'] = {"": 0} if device == 'cuda' else {"": 'cpu'}
+            model_kwargs['device_map'] = {"": 3} if device == 'cuda' else {"": 'cpu'}
+            # model_kwargs['device_map'] = {"": 0} if device == 'cuda' else {"": 'cpu'}
             model_kwargs.pop('torch_dtype', None)
         pop_unused_model_kwargs(model_kwargs)
 
@@ -1327,7 +1329,7 @@ def get_hf_model(load_8bit: bool = False,
                 offload_folder=offload_folder,
                 rope_scaling=rope_scaling,
                 revision=revision,
-                device_map={"": 0} if device == 'cuda' else {"": 'cpu'},  # seems to be required
+                device_map={"": 3} if device == 'cuda' else {"": 'cpu'},  # seems to be required
             )
         else:
             with torch.device(device):
@@ -1348,7 +1350,7 @@ def get_hf_model(load_8bit: bool = False,
                     trust_remote_code=trust_remote_code,
                     offload_folder=offload_folder,
                     rope_scaling=rope_scaling,
-                    device_map="auto",
+                    device_map = {'': 3}
                 )
                 if load_half and not load_gptq:
                     model.half()
