@@ -208,11 +208,7 @@ def get_h2o_title(title, description):
                     {description}
                 </div>
                 <div style="display:flex; justify-content:center; margin-bottom:30px; margin-right:330px;">
-                    <div style="height: 60px; width: 60px; margin-right:20px;">{h2o_logo}</div>
                     <h1 style="line-height:60px">{title}</h1>
-                </div>
-                <div style="float:right; height: 80px; width: 80px; margin-top:-100px">
-                    <img src="https://raw.githubusercontent.com/h2oai/h2ogpt/main/docs/h2o-qr.png">
                 </div>
                 """
 
