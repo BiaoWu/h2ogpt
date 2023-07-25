@@ -1073,7 +1073,7 @@ non_image_types = ["pdf", "txt", "csv", "toml", "py", "rst", "rtf",
                    "html", "mhtml",
                    "enex", "eml", "epub", "odt", "pptx", "ppt",
                    "zip", "urls",
-
+                   "java", "kt",
                    ]
 # "msg",  GPL3
 
@@ -1338,6 +1338,10 @@ def file_to_doc(file, base_path=None, verbose=False, fail_any_exception=False,
         doc1 = PythonLoader(file).load()
         add_meta(doc1, file)
         doc1 = chunk_sources(doc1, chunk=chunk, chunk_size=chunk_size, language=Language.PYTHON)
+    elif file.lower().endswith('.java'):
+        doc1 = PythonLoader(file).load()
+        add_meta(doc1, file)
+        doc1 = chunk_sources(doc1, chunk=chunk, chunk_size=chunk_size, language=Language.JAVA)
     elif file.lower().endswith('.toml'):
         doc1 = TomlLoader(file).load()
         add_meta(doc1, file)
