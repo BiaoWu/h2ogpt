@@ -2681,23 +2681,6 @@ def get_model_max_length(model_state):
 
 
 def get_max_max_new_tokens(model_state, **kwargs):
-    if not isinstance(model_state['tokenizer'], (str, type(None))):
-        max_max_new_tokens = model_state['tokenizer'].model_max_length
-    else:
-        max_max_new_tokens = None
-
-    if kwargs['max_max_new_tokens'] is not None and max_max_new_tokens is not None:
-        return min(max_max_new_tokens, kwargs['max_max_new_tokens'])
-    elif kwargs['max_max_new_tokens'] is not None:
-        return kwargs['max_max_new_tokens']
-    elif kwargs['memory_restriction_level'] == 1:
-        return 768
-    elif kwargs['memory_restriction_level'] == 2:
-        return 512
-    elif kwargs['memory_restriction_level'] >= 3:
-        return 256
-    else:
-        # FIXME: Need to update after new model loaded, so user can control with slider
         return 2048
 
 
