@@ -1101,6 +1101,7 @@ def file_to_doc(file, base_path=None, verbose=False, fail_any_exception=False,
                 captions_model=None,
                 enable_ocr=False, enable_pdf_ocr='auto', caption_loader=None,
                 headsize=50):
+    print("file_to_doc : %s" % file)
     if file is None:
         if fail_any_exception:
             raise RuntimeError("Unexpected None file")
@@ -1342,6 +1343,7 @@ def file_to_doc(file, base_path=None, verbose=False, fail_any_exception=False,
         doc1 = PythonLoader(file).load()
         add_meta(doc1, file)
         doc1 = chunk_sources(doc1, chunk=chunk, chunk_size=chunk_size, language=Language.JAVA)
+        print("file_to_doc : %s is java, %s" % (file, type(doc1)))
     elif file.lower().endswith('.toml'):
         doc1 = TomlLoader(file).load()
         add_meta(doc1, file)
