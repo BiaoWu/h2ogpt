@@ -2259,8 +2259,7 @@ def evaluate(
                         print("WARNING: Special characters in prompt", flush=True)
                 if stream_output:
                     skip_prompt = False  # means first output has prompt too
-                    streamer = H2OTextIteratorStreamer(tokenizer, skip_prompt=skip_prompt, block=False,
-                                                       **decoder_kwargs)
+                    streamer = TextIteratorStreamer(tokenizer, skip_prompt=skip_prompt, block=False)
                     gen_kwargs.update(dict(streamer=streamer))
                     target = wrapped_partial(generate_with_exceptions, model.generate,
                                              prompt=prompt, inputs_decoded=inputs_decoded,
