@@ -50,7 +50,7 @@ from langchain.document_loaders import PyPDFLoader, TextLoader, CSVLoader, Pytho
     EverNoteLoader, UnstructuredEmailLoader, UnstructuredODTLoader, UnstructuredPowerPointLoader, \
     UnstructuredEPubLoader, UnstructuredImageLoader, UnstructuredRTFLoader, ArxivLoader, UnstructuredPDFLoader, \
     UnstructuredExcelLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter, Language
+from langchain.text_splitter import RecursiveCharacterTextSplitter, Language, CharacterTextSplitter
 from langchain.chains.question_answering import load_qa_chain
 from langchain.docstore.document import Document
 from langchain import PromptTemplate, HuggingFaceTextGenInference
@@ -1340,9 +1340,10 @@ def file_to_doc(file, base_path=None, verbose=False, fail_any_exception=False,
         add_meta(doc1, file)
         doc1 = chunk_sources(doc1, chunk=chunk, chunk_size=chunk_size, language=Language.PYTHON)
     elif file.lower().endswith('.java'):
-        doc1 = PythonLoader(file).load()
+        doc1 = TextLoader(file).load()
         add_meta(doc1, file)
-        doc1 = chunk_sources(doc1, chunk=chunk, chunk_size=chunk_size, language=Language.JAVA)
+        text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+        doc1 = text_splitter.split_documents(doc1)
         print("file_to_doc : %s is java, %s" % (file, type(doc1)))
     elif file.lower().endswith('.toml'):
         doc1 = TomlLoader(file).load()
